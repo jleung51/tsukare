@@ -7,6 +7,7 @@
     <style name="Title" parent="@style/Base">
         <item name="android:fontWeight" tools:targetApi="o">300</item>
         <item name="android:textSize">48sp</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
 
 </resources>
