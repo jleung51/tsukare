@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base">
+        <item name="android:fontFamily">@font/oswald</item>
+    </style>
+
+    <style name="Title" parent="@style/Base">
+        <item name="android:fontWeight" tools:targetApi="o">300</item>
+        <item name="android:textSize">48sp</item>
+    </style>
+
+</resources>
