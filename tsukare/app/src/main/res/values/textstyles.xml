@@ -1,13 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base">
-        <item name="android:fontFamily">@font/kaisei_haruno_umi_medium</item>
+        <item name="android:fontFamily">@font/assistant</item>
     </style>
 
     <style name="Title" parent="@style/Base">
-        <item name="android:fontWeight" tools:targetApi="o">300</item>
+        <item name="android:fontFamily">@font/kaisei_haruno_umi_medium</item>
         <item name="android:textSize">48sp</item>
         <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="Heading1" parent="@style/Title">
+        <item name="android:fontFamily">@font/kaisei_haruno_umi_regular</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="Text" parent="@style/Base">
+        <item name="android:fontWeight" tools:targetApi="o">300</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Tsukare</string>
+
+    <!-- Station Activity -->
+    <string name="station_activity_heading">Where are we\nheaded next?</string>
+
 </resources>
