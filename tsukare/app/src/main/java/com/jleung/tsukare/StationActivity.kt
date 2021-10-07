@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class StationActivity : AppCompatActivity() {
 
-    val stationList: MutableList<Station> = mutableListOf()
+    private val stationList: MutableList<Station> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +31,8 @@ class StationActivity : AppCompatActivity() {
 
                 val selectedStation = parent.getItemAtPosition(position) as Station
 
-                val intent = Intent(applicationContext, SplashActivity::class.java)
-                    .putExtra("station", selectedStation)  // TODO: Transition to alarm activity
+                val intent = Intent(applicationContext, NapActivity::class.java)
+                    .putExtra("station", selectedStation)
                 startActivity(intent)
             }
     }
