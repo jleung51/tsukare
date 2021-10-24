@@ -1,12 +1,18 @@
 package com.jleung.tsukare
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.CancellationTokenSource
+import kotlin.random.Random
 
 class NapActivity : AppCompatActivity() {
 
@@ -25,6 +32,8 @@ class NapActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var locationCallback: LocationCallback
+
+    private lateinit var alarmManager: AlarmManager
 
     private val requestCheckSettings = 0x1
 
@@ -62,6 +71,20 @@ class NapActivity : AppCompatActivity() {
         Log.d(tag, "Subscribing to location updates.")
         requestRecurringLocationUpdates(locationRequestDetails, locationCallback)
 
+
+
+
+        verifySystemAlertWindowPermissions()
+
+        alarmManager = getAlarmManager()
+        verifyAlarmPermissions(alarmManager)
+        val pendingIntent = setAlarmTarget(TsukareBroadcastReceiver::class.java)
+
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000, pendingIntent),
+            pendingIntent
+        )
+        Log.d(tag, "Set alarm clock to activate TsukareBroadcastReceiver.")
 
     }
 
@@ -169,6 +192,8 @@ class NapActivity : AppCompatActivity() {
                             "Location not currently activated."
                 )
                 askToActivateLocation(exception)
+
+                finish()
             }
 
     }
@@ -204,4 +229,63 @@ class NapActivity : AppCompatActivity() {
             askToActivateLocation(e)
         }
     }
+
+    // Alarm functions
+
+    private fun getAlarmManager() : AlarmManager {
+        return getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    }
+
+    private fun verifyAlarmPermissions(alarmManager: AlarmManager) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+
+                // Request user to enable permissions
+                Toast.makeText(
+                    this,
+                    "Alarm permissions are required for this application.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // Navigate to permissions
+                startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+
+                // Exit activity
+                finish()
+            }
+        }
+
+    }
+
+    // Returns a pendingIntent to be used for AlarmManager.
+    private fun setAlarmTarget(target: Class<*>): PendingIntent {
+        return PendingIntent.getBroadcast(
+            this, Random.nextInt(),
+            Intent(this, target),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun verifySystemAlertWindowPermissions() {
+
+        if (!Settings.canDrawOverlays(this)) {
+
+            // Request user to enable permissions
+            Toast.makeText(
+                this,
+                "This app requires permission to be displayed over other apps, to alert you " +
+                "when you have arrived.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            // Navigate to permissions
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+
+            // Exit activity
+            finish()
+        }
+
+    }
+
 }
